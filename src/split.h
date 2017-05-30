@@ -57,4 +57,6 @@ rp_frame * find_frame_number (int num);
 
 rp_frame *current_frame (void);
 
+void h_layout(rp_screen *screen);
+
 #endif
