@@ -251,6 +251,8 @@ struct rp_defaults
   int bar_border_width;
   int bar_in_padding;
 
+  int auto_hlayout;
+
   int frame_indicator_timeout;
   int frame_resize_unit;
 

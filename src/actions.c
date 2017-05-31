@@ -152,6 +152,7 @@ static cmdret * set_resizeunit (struct cmdarg **args);
 static cmdret * set_wingravity (struct cmdarg **args);
 static cmdret * set_transgravity (struct cmdarg **args);
 static cmdret * set_maxsizegravity (struct cmdarg **args);
+static cmdret * set_autohlayout (struct cmdarg **args);
 static cmdret * set_bargravity (struct cmdarg **args);
 static cmdret * set_font (struct cmdarg **args);
 static cmdret * set_padding (struct cmdarg **args);
@@ -340,6 +341,7 @@ static void
 init_set_vars (void)
 {
   /* Keep this sorted alphabetically. */
+  add_set_var ("autohlayout", set_autohlayout, 1, "", arg_NUMBER);
   add_set_var ("barborder", set_barborder, 1, "", arg_NUMBER);
   add_set_var ("bargravity", set_bargravity, 1, "", arg_GRAVITY);
   add_set_var ("barinpadding", set_barinpadding, 1, "", arg_NUMBER);
@@ -4187,6 +4189,24 @@ set_border (struct cmdarg **args)
         maximize (win);
     }
 
+  return cmdret_new (RET_SUCCESS, NULL);
+}
+
+static cmdret *
+set_autohlayout (struct cmdarg **args)
+{
+  rp_screen *cur;
+
+  if (args[0] == NULL)
+    return cmdret_new (RET_SUCCESS, "%d", defaults.auto_hlayout);
+
+  defaults.auto_hlayout = ARG(0, number) != 0;
+  if (defaults.auto_hlayout) {
+    // update the layout
+    list_for_each_entry (cur, &rp_screens, node) {
+      h_layout(cur);
+    }
+  }
   return cmdret_new (RET_SUCCESS, NULL);
 }
 
