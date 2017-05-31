@@ -1090,3 +1090,55 @@ find_frame_number (int num)
 
   return NULL;
 }
+
+rp_frame *
+find_frame_most_left (rp_screen *screen)
+{
+  rp_frame *cur;
+  rp_frame *frame = screen_get_frame (screen, screen->current_frame);
+
+  while (frame)
+    {
+      list_for_each_entry (cur, &screen->frames, node)
+        {
+          if (frame_left_abs (frame) == frame_right_abs (cur))
+            if (frame_top_abs (frame) >= frame_top_abs (cur) && frame_top_abs (frame) < frame_bottom_abs (cur))
+              {
+                frame = cur;
+                continue;
+              }
+        }
+      break;
+    }
+
+  while (frame && ! find_window_number(frame->win_number))
+    frame = find_frame_right(frame);
+
+  return frame;
+}
+
+void
+h_layout(rp_screen *screen)
+{
+  int nb_wins;
+  rp_window_elem *we;
+  nb_wins = 0;
+  list_for_each_entry (we, &rp_current_group->mapped_windows, node)
+    if (we->win->scr == screen)
+      ++nb_wins;
+
+  if (nb_wins > 0)
+    {
+      rp_frame *frame = find_frame_most_left(screen);
+      set_active_frame (frame, 0);
+      remove_all_splits();
+
+      int pixels = screen->width / nb_wins;
+      int i;
+      for (i = 0; i < nb_wins; ++i)
+        {
+          v_split_frame(frame, pixels);
+          frame = find_frame_right (frame);
+        }
+    }
+}

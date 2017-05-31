@@ -227,6 +227,7 @@ static cmdret *cmd_grename (int interactive, struct cmdarg **args);
 static cmdret *cmd_groups (int interactive, struct cmdarg **args);
 static cmdret *cmd_gselect (int interactive, struct cmdarg **args);
 static cmdret *cmd_h_split (int interactive, struct cmdarg **args);
+static cmdret *cmd_h_layout (int interactive, struct cmdarg **args);
 static cmdret *cmd_help (int interactive, struct cmdarg **args);
 static cmdret *cmd_info (int interactive, struct cmdarg **args);
 static cmdret *cmd_kill (int interactive, struct cmdarg **args);
@@ -502,6 +503,8 @@ init_user_commands(void)
                "Keymap: ", arg_KEYMAP);
   add_command ("hsplit",        cmd_h_split,    1, 0, 0,
                "Split: ", arg_STRING);
+  add_command ("hlayout",      cmd_h_layout,    1, 1, 1,
+               "Layout horizontally: ", arg_NUMBER);
   add_command ("info",          cmd_info,       1, 0, 0,
                "Format: ", arg_REST);
   add_command ("kill",          cmd_kill,       0, 0, 0);
@@ -3214,6 +3217,24 @@ cmd_h_split (int interactive UNUSED, struct cmdarg **args)
   else
     return cmdret_new (RET_FAILURE, "hsplit: %s", invalid_negative_arg);
 
+  return cmdret_new (RET_SUCCESS, NULL);
+}
+
+cmdret *
+cmd_h_layout (int interactive UNUSED, struct cmdarg **args)
+{
+  int screen_nb;
+  rp_screen *screen;
+
+  screen_nb = ARG(0, number);
+  if (screen_nb < 0)
+    return cmdret_new (RET_FAILURE, "hlayout: out of range");
+
+  screen = screen_number (screen_nb);
+  if (!screen)
+    return cmdret_new (RET_FAILURE, "hlayout: screen %d not found", screen_nb);
+
+  h_layout (screen);
   return cmdret_new (RET_SUCCESS, NULL);
 }
 

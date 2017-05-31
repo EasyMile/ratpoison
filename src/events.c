@@ -140,6 +140,7 @@ unmap_notify (XEvent *ev)
     }
 
   update_window_names (win->scr, defaults.window_fmt);
+  h_layout(win->scr);
 }
 
 static void
@@ -195,6 +196,7 @@ map_request (XEvent *ev)
         }
       break;
     }
+  h_layout(win->scr);
 }
 
 static void
