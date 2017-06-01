@@ -94,6 +94,8 @@ struct numset *rp_frame_numset;
 /* The X11 selection globals */
 rp_xselection selection;
 
+struct rp_screen_matchers rp_screen_matchers;
+
 static void
 x_export_selection (void)
 {

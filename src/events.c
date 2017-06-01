@@ -73,6 +73,7 @@ new_window (XCreateWindowEvent *e)
 {
   rp_window *win;
   rp_screen *s;
+  int wanted_screen;
 
   if (e->override_redirect)
     return;
@@ -93,6 +94,17 @@ new_window (XCreateWindowEvent *e)
     {
       win = add_to_window_list (s, e->window);
       update_window_information (win);
+      wanted_screen = rp_screen_matchers_find_screen(&rp_screen_matchers,
+                                                     win->res_class);
+      PRINT_DEBUG(("\n   wanted_screen: %d %s\n",
+                   wanted_screen, win->res_class));
+      if (wanted_screen >= 0) {
+        s = screen_number(wanted_screen);
+        if (s) {
+          // the screen exists, so use its current frame for the display
+          win->intended_frame_number = s->current_frame;
+        }
+      }
     }
 }
 
@@ -140,7 +152,9 @@ unmap_notify (XEvent *ev)
     }
 
   update_window_names (win->scr, defaults.window_fmt);
-  h_layout(win->scr);
+  if (defaults.auto_hlayout) {
+    h_layout(win->scr);
+  }
 }
 
 static void
@@ -196,7 +210,9 @@ map_request (XEvent *ev)
         }
       break;
     }
-  h_layout(win->scr);
+  if (defaults.auto_hlayout) {
+    h_layout(win->scr);
+  }
 }
 
 static void

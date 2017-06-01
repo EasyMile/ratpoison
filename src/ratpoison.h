@@ -91,6 +91,7 @@ do {                                            \
 #include "hook.h"
 #include "xrandr.h"
 #include "format.h"
+#include "screen_matchers.h"
 
 void clean_up (void);
 

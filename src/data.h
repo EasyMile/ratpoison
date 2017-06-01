@@ -251,6 +251,8 @@ struct rp_defaults
   int bar_border_width;
   int bar_in_padding;
 
+  int auto_hlayout;
+
   int frame_indicator_timeout;
   int frame_resize_unit;
 
@@ -421,6 +423,11 @@ struct rp_xselection
 {
   char *text;
   int len;
+};
+
+struct rp_screen_matchers
+{
+  struct list_head matchers;
 };
 
 #endif /* _RATPOISON_DATA_H */

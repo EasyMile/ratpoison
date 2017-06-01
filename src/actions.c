@@ -152,6 +152,7 @@ static cmdret * set_resizeunit (struct cmdarg **args);
 static cmdret * set_wingravity (struct cmdarg **args);
 static cmdret * set_transgravity (struct cmdarg **args);
 static cmdret * set_maxsizegravity (struct cmdarg **args);
+static cmdret * set_autohlayout (struct cmdarg **args);
 static cmdret * set_bargravity (struct cmdarg **args);
 static cmdret * set_font (struct cmdarg **args);
 static cmdret * set_padding (struct cmdarg **args);
@@ -181,6 +182,7 @@ static cmdret * set_framemsgwait(struct cmdarg **args);
 static cmdret * set_startupmessage(struct cmdarg **args);
 static cmdret * set_warp(struct cmdarg **args);
 static cmdret * set_rudeness(struct cmdarg **args);
+static cmdret * set_screen_matcher(struct cmdarg **args);
 
 /* command function prototypes. */
 static cmdret *cmd_abort (int interactive, struct cmdarg **args);
@@ -340,6 +342,7 @@ static void
 init_set_vars (void)
 {
   /* Keep this sorted alphabetically. */
+  add_set_var ("autohlayout", set_autohlayout, 1, "", arg_NUMBER);
   add_set_var ("barborder", set_barborder, 1, "", arg_NUMBER);
   add_set_var ("bargravity", set_bargravity, 1, "", arg_GRAVITY);
   add_set_var ("barinpadding", set_barinpadding, 1, "", arg_NUMBER);
@@ -365,6 +368,8 @@ init_set_vars (void)
                arg_NUMBER, "", arg_NUMBER);
   add_set_var ("resizeunit", set_resizeunit, 1, "", arg_NUMBER);
   add_set_var ("rudeness", set_rudeness, 1, "", arg_NUMBER);
+  add_set_var ("screenmatcher", set_screen_matcher, 2, "", arg_NUMBER,
+               "", arg_REST);
   add_set_var ("startupmessage", set_startupmessage, 1, "", arg_NUMBER);
   add_set_var ("topkmap", set_topkmap, 1, "", arg_STRING);
   add_set_var ("transgravity", set_transgravity, 1, "", arg_GRAVITY);
@@ -4191,6 +4196,24 @@ set_border (struct cmdarg **args)
 }
 
 static cmdret *
+set_autohlayout (struct cmdarg **args)
+{
+  rp_screen *cur;
+
+  if (args[0] == NULL)
+    return cmdret_new (RET_SUCCESS, "%d", defaults.auto_hlayout);
+
+  defaults.auto_hlayout = ARG(0, number) != 0;
+  if (defaults.auto_hlayout) {
+    // update the layout
+    list_for_each_entry (cur, &rp_screens, node) {
+      h_layout(cur);
+    }
+  }
+  return cmdret_new (RET_SUCCESS, NULL);
+}
+
+static cmdret *
 set_barborder (struct cmdarg **args)
 {
   rp_screen *cur;
@@ -4265,6 +4288,30 @@ set_infofmt (struct cmdarg **args)
 
   free (defaults.info_fmt);
   defaults.info_fmt = xstrdup (ARG_STRING(0));
+
+  return cmdret_new (RET_SUCCESS, NULL);
+}
+
+static cmdret *
+set_screen_matcher (struct cmdarg **args)
+{
+  int screen;
+  const char * fmt;
+
+  if (args[0] == NULL) {
+    // todo, return the associated regex strings
+    return cmdret_new (RET_FAILURE, "set screenmatcher: missing argument");
+  }
+  screen = ARG(0, number);
+  if (screen < 0) {
+    return cmdret_new (RET_FAILURE, "set screenmatcher: invalid argument");
+  }
+
+  fmt = ARG_STRING(1);
+
+  if (rp_screen_matchers_set_regex(&rp_screen_matchers, screen, fmt)) {
+    return cmdret_new (RET_FAILURE, "set screenmatcher: bad regex");
+  }
 
   return cmdret_new (RET_SUCCESS, NULL);
 }
