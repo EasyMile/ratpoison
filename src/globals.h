@@ -194,6 +194,8 @@ extern struct list_head rp_title_changed_hook;
 
 extern struct rp_hook_db_entry rp_hook_db[];
 
+extern struct rp_screen_matchers rp_screen_matchers;
+
 void set_rp_window_focus (rp_window *win);
 void set_window_focus (Window window);
 

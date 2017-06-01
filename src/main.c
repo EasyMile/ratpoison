@@ -740,6 +740,7 @@ main (int argc, char *argv[])
   history_load ();
 
   scanwins ();
+  rp_screen_matchers_init(&rp_screen_matchers);
 
   if (read_startup_files (alt_rcfile) == -1)
     return EXIT_FAILURE;

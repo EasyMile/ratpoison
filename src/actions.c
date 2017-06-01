@@ -182,6 +182,7 @@ static cmdret * set_framemsgwait(struct cmdarg **args);
 static cmdret * set_startupmessage(struct cmdarg **args);
 static cmdret * set_warp(struct cmdarg **args);
 static cmdret * set_rudeness(struct cmdarg **args);
+static cmdret * set_screen_matcher(struct cmdarg **args);
 
 /* command function prototypes. */
 static cmdret *cmd_abort (int interactive, struct cmdarg **args);
@@ -367,6 +368,8 @@ init_set_vars (void)
                arg_NUMBER, "", arg_NUMBER);
   add_set_var ("resizeunit", set_resizeunit, 1, "", arg_NUMBER);
   add_set_var ("rudeness", set_rudeness, 1, "", arg_NUMBER);
+  add_set_var ("screenmatcher", set_screen_matcher, 2, "", arg_NUMBER,
+               "", arg_REST);
   add_set_var ("startupmessage", set_startupmessage, 1, "", arg_NUMBER);
   add_set_var ("topkmap", set_topkmap, 1, "", arg_STRING);
   add_set_var ("transgravity", set_transgravity, 1, "", arg_GRAVITY);
@@ -4285,6 +4288,30 @@ set_infofmt (struct cmdarg **args)
 
   free (defaults.info_fmt);
   defaults.info_fmt = xstrdup (ARG_STRING(0));
+
+  return cmdret_new (RET_SUCCESS, NULL);
+}
+
+static cmdret *
+set_screen_matcher (struct cmdarg **args)
+{
+  int screen;
+  const char * fmt;
+
+  if (args[0] == NULL) {
+    // todo, return the associated regex strings
+    return cmdret_new (RET_FAILURE, "set screenmatcher: missing argument");
+  }
+  screen = ARG(0, number);
+  if (screen < 0) {
+    return cmdret_new (RET_FAILURE, "set screenmatcher: invalid argument");
+  }
+
+  fmt = ARG_STRING(1);
+
+  if (rp_screen_matchers_set_regex(&rp_screen_matchers, screen, fmt)) {
+    return cmdret_new (RET_FAILURE, "set screenmatcher: bad regex");
+  }
 
   return cmdret_new (RET_SUCCESS, NULL);
 }

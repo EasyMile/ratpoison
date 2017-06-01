@@ -67,6 +67,8 @@ ratpoison_SOURCES	= actions.c		\
 			sbuf.h			\
 			screen.h		\
 			screen.c		\
+			screen_matchers.c \
+			screen_matchers.h \
 			split.c			\
 			split.h			\
 			window.c		\

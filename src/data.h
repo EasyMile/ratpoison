@@ -425,4 +425,9 @@ struct rp_xselection
   int len;
 };
 
+struct rp_screen_matchers
+{
+  struct list_head matchers;
+};
+
 #endif /* _RATPOISON_DATA_H */
