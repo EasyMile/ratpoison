@@ -183,6 +183,11 @@ struct rp_screen
   /* Here to abstract over the Xrandr vs X screens difference */
   int left, top, width, height;
 
+  int padding_left;
+  int padding_right;
+  int padding_top;
+  int padding_bottom;
+
   char *display_string;
 
   /* A list of frames that may or may not contain windows. There should

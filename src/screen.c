@@ -28,19 +28,19 @@ static void init_screen (rp_screen *s);
 int
 screen_width (rp_screen *s)
 {
-  return s->width - defaults.padding_right - defaults.padding_left;
+  return s->width - s->padding_right - s->padding_left;
 }
 
 int
 screen_height (rp_screen *s)
 {
-  return s->height - defaults.padding_bottom - defaults.padding_top;
+  return s->height - s->padding_bottom - s->padding_top;
 }
 
 int
 screen_left (rp_screen *s)
 {
-  return s->left + defaults.padding_left;
+  return s->left + s->padding_left;
 }
 
 int
@@ -52,7 +52,7 @@ screen_right (rp_screen *s)
 int
 screen_top (rp_screen *s)
 {
-  return s->top + defaults.padding_top;
+  return s->top + s->padding_top;
 }
 
 int
@@ -345,6 +345,11 @@ init_screen (rp_screen *s)
   int screen_num;
 
   screen_num = DefaultScreen (dpy);
+
+  s->padding_left = 0;
+  s->padding_right = 0;
+  s->padding_top = 0;
+  s->padding_bottom = 0;
 
   if (!rp_have_xrandr)
     {

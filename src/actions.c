@@ -4116,10 +4116,10 @@ set_padding (struct cmdarg **args)
 
   if (args[0] == NULL)
     return cmdret_new (RET_SUCCESS, "%d %d %d %d",
-                              defaults.padding_left,
-                              defaults.padding_top,
-                              defaults.padding_right,
-                              defaults.padding_bottom);
+                              rp_current_screen->padding_left,
+                              rp_current_screen->padding_top,
+                              rp_current_screen->padding_right,
+                              rp_current_screen->padding_bottom);
 
   l = ARG(0,number);
   t = ARG(1,number);
@@ -4139,30 +4139,35 @@ set_padding (struct cmdarg **args)
       bk_pos = frame->x;
       bk_len = frame->width;
 
-      if (frame->x == defaults.padding_left)
+      if (frame->x == rp_current_screen->padding_left)
         {
           frame->x = l;
           frame->width += bk_pos - l;
         }
 
-      if ((bk_pos + bk_len) == (rp_current_screen->left + rp_current_screen->width - defaults.padding_right))
+      if ((bk_pos + bk_len) == (rp_current_screen->left + rp_current_screen->width - rp_current_screen->padding_right))
         frame->width = rp_current_screen->left + rp_current_screen->width - r - frame->x;
 
       /* Resize vertically. */
       bk_pos = frame->y;
       bk_len = frame->height;
 
-      if (frame->y == defaults.padding_top)
+      if (frame->y == rp_current_screen->padding_top)
         {
           frame->y = t;
           frame->height += bk_pos - t;
         }
 
-      if ((bk_pos + bk_len) == (rp_current_screen->top + rp_current_screen->height - defaults.padding_bottom))
+      if ((bk_pos + bk_len) == (rp_current_screen->top + rp_current_screen->height - rp_current_screen->padding_bottom))
         frame->height = rp_current_screen->top + rp_current_screen->height - b - frame->y;
 
       maximize_all_windows_in_frame (frame);
     }
+
+  rp_current_screen->padding_left   = l;
+  rp_current_screen->padding_right  = r;
+  rp_current_screen->padding_top    = t;
+  rp_current_screen->padding_bottom = b;
 
   defaults.padding_left   = l;
   defaults.padding_right  = r;

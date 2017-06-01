@@ -133,8 +133,8 @@ maximize_frame (rp_frame *frame)
 {
   rp_screen *s = frames_screen (frame);
 
-  frame->x = defaults.padding_left;
-  frame->y = defaults.padding_top;
+  frame->x = s->padding_left;
+  frame->y = s->padding_top;
 
   frame->width = screen_width (s);
   frame->height = screen_height (s);
