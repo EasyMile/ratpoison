@@ -174,6 +174,7 @@ add_to_window_list (rp_screen *s, Window w)
   new_window->number = -1;
   new_window->frame_number = EMPTY;
   new_window->intended_frame_number = -1;
+  new_window->intended_screen_number = -1;
   new_window->named = 0;
   new_window->hints = XAllocSizeHints ();
   new_window->colormap = DefaultColormap (dpy, s->screen_num);
@@ -477,12 +478,25 @@ void
 set_active_window_body (rp_window *win, int force)
 {
   rp_window *last_win;
+  rp_screen * screen;
   rp_frame *frame = NULL, *last_frame = NULL;
 
   if (win == NULL)
     return;
 
   PRINT_DEBUG (("intended_frame_number: %d\n", win->intended_frame_number));
+
+  // use the intended window if we can
+  if (win->intended_screen_number >= 0) {
+    screen = screen_number(win->intended_screen_number);
+    if (screen) {
+      frame = screen_get_frame (screen, screen->current_frame);
+      win->intended_screen_number = -1;
+      win->intended_frame_number = -1;
+      if (frame != current_frame ())
+        last_frame = current_frame ();
+    }
+  }
 
   /* use the intended frame if we can. */
   if (win->intended_frame_number >= 0)

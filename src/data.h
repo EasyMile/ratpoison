@@ -112,6 +112,8 @@ struct rp_window
      is mapped and this is >0 then use the frame (if it exists). */
   int intended_frame_number;
 
+  int intended_screen_number;
+
   struct list_head node;
 };
 

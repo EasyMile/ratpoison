@@ -98,13 +98,7 @@ new_window (XCreateWindowEvent *e)
                                                      win->res_class);
       PRINT_DEBUG(("\n   wanted_screen: %d %s\n",
                    wanted_screen, win->res_class));
-      if (wanted_screen >= 0) {
-        s = screen_number(wanted_screen);
-        if (s) {
-          // the screen exists, so use its current frame for the display
-          win->intended_frame_number = s->current_frame;
-        }
-      }
+      win->intended_screen_number = wanted_screen;
     }
 }
 
