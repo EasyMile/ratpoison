@@ -38,6 +38,16 @@ AS_CASE([$enable_debug],
   [no], [AC_MSG_RESULT([no])],
   [AC_MSG_ERROR([invalid --enable-debug="$enable_debug" parameter])])
 
+AC_MSG_CHECKING([whether to enable keypress])
+AC_ARG_ENABLE([keypress],
+  [AS_HELP_STRING([--enable-keypress],[build with keypress])],
+  [], [enable_keypress=no])
+AS_CASE([$enable_keypress],
+  [yes], [AC_MSG_RESULT([yes])
+  AC_DEFINE([ENABLE_KEYPRESS], 1, [Define this to enable keypress])],
+  [no], [AC_MSG_RESULT([no])],
+  [AC_MSG_ERROR([invalid --enable-keypress="$enable_keypress" parameter])])
+
 AC_ARG_WITH([electric-fence],
   [AS_HELP_STRING([--with-electric-fence],
     [Use the Electric Fence library (memory allocation debugging).])])

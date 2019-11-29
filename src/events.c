@@ -840,8 +840,10 @@ delegate_event (XEvent *ev)
       break;
 
     case KeyPress:
+#ifdef ENABLE_KEYPRESS
       PRINT_DEBUG (("--- Handling KeyPress ---\n"));
       key_press (ev);
+#endif
       break;
 
     case UnmapNotify:
